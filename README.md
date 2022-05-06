@@ -9,6 +9,43 @@ This repo is an implementation of PyTorch version YOLOX, there is also a [MegEng
 
 <img src="assets/git_fig.png" width="1000" >
 
+
+## Build on Xavier Jetpack 5
+
+
+1) Install python libraries:
+```
+pip3 install -r requirements_xavier.txt
+```
+
+2) Install Nvidia version of pytorch/torch.  Note version.
+https://forums.developer.nvidia.com/t/pytorch-for-jetson-version-1-11-now-available/72048
+
+3) Install torchvision from source.  Can't use pip3 veresion since it doesn't link properly to the Nvidia version of torch.  Install version that works with torch that you installed in 2) (check git for details)  Don't clone git -- download the tagged version.
+```
+https://github.com/pytorch/vision.git
+cd vision
+pip3 install -v -e .
+```
+
+4) To build the TensorRT models, you will need the tools/trt.py scripts
+```
+python3 tools/trt.py -n <name of yolox> -c <path to pretrained pytorch yolox>
+```
+If your machine has low amount of member, it may be necessary to adjust the batch size.  Start with a batch size of 1 and increase.
+```
+python3 tools/trt.py -n <name of yolox> -c <path to pretrained pytorch yolox> -b <batch size>
+```
+
+
+5) To run yolox with tensorrt and webcam
+```
+python3 tools/demo.py webcam -n <name of yolox> -c <path to pretrained pytorch yolox> --trt
+```
+
+Exclude the "--trt" if you want to try the inference without CUDA or GPU.
+
+
 ## Updates!!
 * 【2022/04/14】 We suport jit compile op.
 * 【2021/08/19】 We optimize the training process with **2x** faster training and **~1%** higher performance! See [notes](docs/updates_note.md) for more details.
